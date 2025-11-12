@@ -7,12 +7,32 @@ const ChessEngine = require('./src/chessEngine');
 
 const app = express();
 const server = http.createServer(app);
-const io = socketIo(server);
+
+// Configure Socket.io with CORS for Vercel frontend
+const io = socketIo(server, {
+  cors: {
+    origin: process.env.FRONTEND_URL || '*', // Replace with your Vercel URL after deployment
+    methods: ['GET', 'POST'],
+    credentials: true
+  }
+});
 
 const PORT = process.env.PORT || 3000;
 
 // Initialize GameManager
 const gameManager = new GameManager();
+
+// CORS middleware for Express routes
+app.use((req, res, next) => {
+  res.header('Access-Control-Allow-Origin', process.env.FRONTEND_URL || '*');
+  res.header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+  res.header('Access-Control-Allow-Headers', 'Content-Type');
+  res.header('Access-Control-Allow-Credentials', 'true');
+  if (req.method === 'OPTIONS') {
+    return res.sendStatus(200);
+  }
+  next();
+});
 
 // Middleware
 app.use(express.json()); // Parse JSON request bodies
