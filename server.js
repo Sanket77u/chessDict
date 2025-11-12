@@ -97,23 +97,6 @@ app.get('/api/game/:gameId', (req, res) => {
   }
 });
 
-// Error handling middleware
-app.use((err, req, res, next) => {
-  console.error('Error:', err.stack);
-  res.status(500).json({
-    success: false,
-    error: 'Internal server error'
-  });
-});
-
-// 404 handler for undefined routes
-app.use((req, res) => {
-  res.status(404).json({
-    success: false,
-    error: 'Route not found'
-  });
-});
-
 // Player-to-game mapping for tracking which game each player is in
 const playerGameMap = new Map(); // socketId -> gameId
 
@@ -374,6 +357,23 @@ io.on('connection', (socket) => {
       console.error('Error reconnecting:', error);
       socket.emit('error', { message: error.message || 'Failed to reconnect' });
     }
+  });
+});
+
+// Error handling middleware (must be after all routes)
+app.use((err, req, res, next) => {
+  console.error('Error:', err.stack);
+  res.status(500).json({
+    success: false,
+    error: 'Internal server error'
+  });
+});
+
+// 404 handler for undefined routes (must be last)
+app.use((req, res) => {
+  res.status(404).json({
+    success: false,
+    error: 'Route not found'
   });
 });
 
