@@ -360,7 +360,7 @@ io.on('connection', (socket) => {
   });
 });
 
-// Error handling middleware (must be after all routes)
+// Error handling middleware
 app.use((err, req, res, next) => {
   console.error('Error:', err.stack);
   res.status(500).json({
@@ -369,12 +369,18 @@ app.use((err, req, res, next) => {
   });
 });
 
-// 404 handler for undefined routes (must be last)
+// 404 handler - only for non-existent routes (must be last)
+// This won't affect static files or Socket.io
 app.use((req, res) => {
-  res.status(404).json({
-    success: false,
-    error: 'Route not found'
-  });
+  // If it's an API request, return JSON error
+  if (req.path.startsWith('/api/')) {
+    return res.status(404).json({
+      success: false,
+      error: 'API route not found'
+    });
+  }
+  // For all other routes, serve index.html (SPA fallback)
+  res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
 server.listen(PORT, '0.0.0.0', () => {
