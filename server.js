@@ -8,15 +8,17 @@ const ChessEngine = require('./src/chessEngine');
 const app = express();
 const server = http.createServer(app);
 
-// Configure Socket.io with CORS
+// Configure Socket.io with CORS for Render deployment
 const io = socketIo(server, {
   cors: {
     origin: '*',
     methods: ['GET', 'POST'],
     credentials: true
   },
-  transports: ['websocket', 'polling'],
-  allowEIO3: true
+  transports: ['polling', 'websocket'],
+  allowEIO3: true,
+  pingTimeout: 60000,
+  pingInterval: 25000
 });
 
 const PORT = process.env.PORT || 3000;
@@ -39,6 +41,11 @@ app.use((req, res, next) => {
 // Middleware
 app.use(express.json()); // Parse JSON request bodies
 app.use(express.static(path.join(__dirname, 'public'))); // Serve static files from public directory
+
+// Health check endpoint for Render
+app.get('/health', (req, res) => {
+  res.status(200).json({ status: 'ok', message: 'Server is running' });
+});
 
 // Basic route
 app.get('/', (req, res) => {
@@ -370,6 +377,8 @@ io.on('connection', (socket) => {
   });
 });
 
-server.listen(PORT, () => {
+server.listen(PORT, '0.0.0.0', () => {
   console.log(`ChessDict server running on port ${PORT}`);
+  console.log(`Environment: ${process.env.NODE_ENV || 'development'}`);
+  console.log(`Server is ready to accept connections`);
 });
