@@ -176,9 +176,24 @@ class GameClient {
             // Animate the move on the board
             this.boardRenderer.movePiece(data.from, data.to, true);
             
-            // Show whose turn it is
+            // Clear previous check highlights
+            this.boardRenderer.clearCheckHighlight();
+            
+            // Show whose turn it is and check status
             const isMyTurn = data.currentTurn === this.playerColor;
-            if (isMyTurn) {
+            
+            if (data.isCheck) {
+                // Highlight the king in check
+                this.boardRenderer.highlightKingInCheck(data.currentTurn);
+                
+                if (isMyTurn) {
+                    // Player is in check
+                    this.uiController.showMessage('⚠️ CHECK! You must protect your King!', 'warning', 0);
+                } else {
+                    // Opponent is in check
+                    this.uiController.showMessage('✓ Check! Opponent must protect their King', 'success', 3000);
+                }
+            } else if (isMyTurn) {
                 this.uiController.showMessage('Your turn', 'info');
             }
         });

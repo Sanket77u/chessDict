@@ -244,6 +244,7 @@ io.on('connection', (socket) => {
       
       // Check for game end conditions
       const opponentColor = game.currentTurn;
+      const isOpponentInCheck = ChessEngine.isKingInCheck(game.board, opponentColor, game);
       const isCheckmate = ChessEngine.isCheckmate(game.board, opponentColor, game);
       const isStalemate = ChessEngine.isStalemate(game.board, opponentColor, game);
       
@@ -279,8 +280,14 @@ io.on('connection', (socket) => {
           piece: moveResult.piece,
           capturedPiece: moveResult.capturedPiece,
           currentTurn: game.currentTurn,
+          isCheck: isOpponentInCheck,
           gameState: game
         });
+        
+        // If opponent is in check, notify them
+        if (isOpponentInCheck) {
+          console.log(`Game ${gameId}: ${opponentColor} is in check!`);
+        }
       }
     } catch (error) {
       console.error('Error making move:', error);

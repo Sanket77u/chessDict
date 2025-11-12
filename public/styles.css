@@ -298,6 +298,20 @@ h1 {
     background-color: #baca44 !important;
 }
 
+.square.in-check {
+    background-color: #ff6b6b !important;
+    animation: checkPulse 1s ease-in-out infinite;
+}
+
+@keyframes checkPulse {
+    0%, 100% {
+        box-shadow: 0 0 0 0 rgba(255, 107, 107, 0.7);
+    }
+    50% {
+        box-shadow: 0 0 0 10px rgba(255, 107, 107, 0);
+    }
+}
+
 .square.legal-move {
     position: relative;
 }

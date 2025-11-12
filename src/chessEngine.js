@@ -532,6 +532,9 @@ function makeMove(board, from, to, gameState) {
     return { valid: false, error: 'Not your turn' };
   }
   
+  // Check if player is currently in check
+  const isCurrentlyInCheck = isKingInCheck(board, piece.color, gameState);
+  
   // Validate the move for the piece type
   if (!isValidMoveForPiece(board, fromRow, fromCol, toRow, toCol, gameState)) {
     return { valid: false, error: 'Invalid move for this piece' };
@@ -541,6 +544,10 @@ function makeMove(board, from, to, gameState) {
   const newBoard = simulateMove(board, fromRow, fromCol, toRow, toCol);
   
   if (isKingInCheck(newBoard, piece.color, gameState)) {
+    // If player was in check and still is, they must get out of check
+    if (isCurrentlyInCheck) {
+      return { valid: false, error: 'You are in check! You must protect your king' };
+    }
     return { valid: false, error: 'Move would leave king in check' };
   }
   

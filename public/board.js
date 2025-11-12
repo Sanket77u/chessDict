@@ -36,6 +36,7 @@ class BoardRenderer {
     render(gameState, playerColor = 'white') {
         this.boardElement.innerHTML = '';
         this.playerColor = playerColor;
+        this.gameState = gameState;
         
         // Determine if board should be rotated (black players see from their side)
         const isRotated = playerColor === 'black';
@@ -79,6 +80,36 @@ class BoardRenderer {
         } else {
             this.boardElement.classList.remove('rotated');
         }
+    }
+    
+    /**
+     * Highlight king square when in check
+     * @param {string} color - Color of the king in check
+     */
+    highlightKingInCheck(color) {
+        // Find the king of the specified color
+        for (let row = 0; row < 8; row++) {
+            for (let col = 0; col < 8; col++) {
+                const piece = this.gameState?.board[row][col];
+                if (piece && piece.type === 'king' && piece.color === color) {
+                    const square = this.getSquareElement(row, col);
+                    if (square) {
+                        square.classList.add('in-check');
+                    }
+                    return;
+                }
+            }
+        }
+    }
+    
+    /**
+     * Remove check highlight from all squares
+     */
+    clearCheckHighlight() {
+        const squares = this.boardElement.querySelectorAll('.square');
+        squares.forEach(square => {
+            square.classList.remove('in-check');
+        });
     }
 
     /**
