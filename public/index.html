@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ChessDict - Multiplayer Chess</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>ChessDict</h1>
+            <div class="game-info">
+                <div class="status-indicator">
+                    <span class="connection-status" id="connectionStatus">Connecting...</span>
+                </div>
+                <div class="game-id-display" id="gameIdDisplay"></div>
+            </div>
+        </header>
+
+        <main>
+            <div class="game-controls">
+                <button id="createGameBtn" class="btn btn-primary">Create New Game</button>
+                <div class="join-game">
+                    <div class="join-game-label">Or join an existing game:</div>
+                    <input type="text" id="gameIdInput" placeholder="Enter Game ID" />
+                    <button id="joinGameBtn" class="btn btn-secondary">Join Game</button>
+                </div>
+            </div>
+
+            <div class="game-area" id="gameArea" style="display: none;">
+                <div class="player-info">
+                    <div class="player-color" id="playerColor"></div>
+                    <div class="turn-indicator" id="turnIndicator"></div>
+                </div>
+
+                <div class="board-container">
+                    <div id="chessBoard" class="chess-board"></div>
+                </div>
+
+                <div class="game-message" id="gameMessage"></div>
+            </div>
+
+            <div class="game-over-screen" id="gameOverScreen" style="display: none;">
+                <div class="game-result" id="gameResult"></div>
+                <button id="newGameBtn" class="btn btn-primary">New Game</button>
+            </div>
+        </main>
+    </div>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script type="module" src="ui.js"></script>
+    <script type="module" src="board.js"></script>
+    <script type="module" src="client.js"></script>
+</body>
+</html>
