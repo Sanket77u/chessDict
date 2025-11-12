@@ -36,6 +36,13 @@ header {
     margin-bottom: 15px;
 }
 
+.logo-image {
+    height: 60px;
+    width: auto;
+    object-fit: contain;
+    animation: float 3s ease-in-out infinite;
+}
+
 .logo-icon {
     font-size: 3rem;
     animation: float 3s ease-in-out infinite;
