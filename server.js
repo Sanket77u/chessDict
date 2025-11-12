@@ -8,13 +8,15 @@ const ChessEngine = require('./src/chessEngine');
 const app = express();
 const server = http.createServer(app);
 
-// Configure Socket.io with CORS for Vercel frontend
+// Configure Socket.io with CORS
 const io = socketIo(server, {
   cors: {
-    origin: process.env.FRONTEND_URL || '*', // Replace with your Vercel URL after deployment
+    origin: '*',
     methods: ['GET', 'POST'],
     credentials: true
-  }
+  },
+  transports: ['websocket', 'polling'],
+  allowEIO3: true
 });
 
 const PORT = process.env.PORT || 3000;

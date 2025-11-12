@@ -25,17 +25,14 @@ class GameClient {
      * Initialize Socket.io connection with automatic reconnection
      */
     initializeSocket() {
-        // Determine backend URL based on environment
-        const backendUrl = window.location.hostname === 'localhost' 
-            ? 'http://localhost:3000'
-            : 'https://your-backend-url.onrender.com'; // Replace with your Render URL after deployment
-        
         // Initialize Socket.io client with reconnection settings
-        this.socket = io(backendUrl, {
+        // When deployed, it will automatically connect to the same domain
+        this.socket = io({
             reconnection: true,
             reconnectionDelay: this.reconnectDelay,
             reconnectionDelayMax: 10000,
-            reconnectionAttempts: this.maxReconnectAttempts
+            reconnectionAttempts: this.maxReconnectAttempts,
+            transports: ['websocket', 'polling']
         });
 
         // Connection event handlers
