@@ -26,6 +26,12 @@ const PORT = process.env.PORT || 3000;
 // Initialize GameManager
 const gameManager = new GameManager();
 
+// Request logging middleware
+app.use((req, res, next) => {
+  console.log(`${new Date().toISOString()} - ${req.method} ${req.path}`);
+  next();
+});
+
 // CORS middleware for Express routes
 app.use((req, res, next) => {
   res.header('Access-Control-Allow-Origin', process.env.FRONTEND_URL || '*');
@@ -40,14 +46,19 @@ app.use((req, res, next) => {
 
 // Middleware
 app.use(express.json()); // Parse JSON request bodies
-app.use(express.static(path.join(__dirname, 'public'))); // Serve static files from public directory
 
-// Health check endpoint for Render
+// Health check endpoint for Render (before static files)
 app.get('/health', (req, res) => {
   res.status(200).json({ status: 'ok', message: 'Server is running' });
 });
 
-// Basic route
+// Serve static files from public directory
+app.use(express.static(path.join(__dirname, 'public'), {
+  index: 'index.html',
+  extensions: ['html', 'htm']
+}));
+
+// Basic route - serve index.html
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
